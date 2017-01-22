@@ -50,9 +50,8 @@ Node* remove_node(Node* head, Node* node) {
 			else {
 				first = current->next;
 			}
-			Node* old = current;
 			current = current->next;
-			free(old);
+			free(node);
 		}
 		else {
 			previous = current;
