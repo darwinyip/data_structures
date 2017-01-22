@@ -6,7 +6,7 @@ typedef struct Stack Stack;
 
 struct Node {
 	int value;
-	Node *next;
+	Node* next;
 };
 
 struct Stack {
@@ -26,12 +26,12 @@ Stack* make_stack() {
 	return new_stack;
 }
 
-void push(Stack *stack, Node* node) {
+void push(Stack* stack, Node* node) {
 	node->next = stack->head;
 	stack->head = node;
 }
 
-Node* pop(Stack *stack) {
+Node* pop(Stack* stack) {
 	Node* node = stack->head;
 	if(stack->head != 0) {
 		stack->head = stack->head->next;
@@ -44,7 +44,7 @@ Node* pop(Stack *stack) {
 }
 
 int main() {
-	Stack *stack = make_stack();
+	Stack* stack = make_stack();
 	int i = 0;
 	printf("Pushing items...\n");
 	while(i < 10) {
