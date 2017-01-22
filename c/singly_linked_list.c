@@ -8,42 +8,42 @@ struct Node {
 	Node* next;
 };
 
-Node* prepend_value(Node* head, int value) {
-	Node* new_node = (Node*)malloc(sizeof(Node));
-	if(head != 0) {
-		new_node->value = value;
-		new_node->next = head;
-	}
-	return new_node;
+Node* create_node(int value) {
+	Node* node = (Node*)malloc(sizeof(Node));
+	node->value = value;
+	node->next = 0;
+	return node;
 }
 
-Node* append_value(Node* head, int value) {
+Node* prepend_node(Node* head, Node* node) {
+	if(head != 0) {
+		node->next = head;
+	}
+	return node;
+}
+
+Node* append_node(Node* head, Node* node) {
 	Node* first = head;
 	Node* current = head;
-	Node* new_node = (Node*)malloc(sizeof(Node));
 	if(current == 0) {
-		current = new_node;
-		current->value = value;
-		current->next = 0;
+		current = node;
 		return current;
 	}
 	else {
 		while(current->next != 0) {
 			current = current->next;
 		}
-		current->next = new_node;
-		current->next->value = value;
-		current->next->next = 0;
+		current->next = node;
 		return first;
 	}
 }
 
-Node* remove_value(Node* head, int value) {
+Node* remove_node(Node* head, Node* node) {
 	Node* first = head;
 	Node* current = head;
 	Node* previous = 0;
 	while(current != 0) {
-		if(current->value == value) {
+		if(current == node) {
 			if(previous != 0) {
 				previous->next = current->next;
 			}
@@ -81,29 +81,23 @@ int get_length(Node* head) {
 }
 
 int main() {
-	printf("%s", "Creating empty node...\n");
-	Node* a = 0;
-	printf("%s", "Inserting values...\n");
-	int i = 4;
-	while(i < 10) {
-		a = append_value(a, i);
-		i++;
+	printf("%s", "Creating node...\n");
+	Node* b = create_node(1);
+	Node* temp = b;
+	printf("%s", "Prepending nodes...\n");
+	int j = 0;
+	while(j < 10) {
+		b = prepend_node(b, create_node(j));
+		j++;
 	}
-	a = append_value(a, 6);
-	print_list(a);
-	printf("Length of List is: %d\n", get_length(a));
-	printf("%s", "Removing value 5...\n");
-	a = remove_value(a, 5);
-	print_list(a);
-	printf("%s", "Removing value 4...\n");
-	a = remove_value(a, 4);
-	print_list(a);
-	printf("%s", "Removing value 6...\n");
-	a = remove_value(a, 6);
-	print_list(a);
-	printf("%s", "Prepending new value 10...\n");
-	a = prepend_value(a, 10);
-	print_list(a);
+	print_list(b);
+	printf("%s", "Appending node 6...\n");
+	b = append_node(b, create_node(6));
+	print_list(b);
+	printf("Length of List is: %d\n", get_length(b));
+	printf("%s", "Removing temp node 1...\n");
+	b = remove_node(b, temp);
+	print_list(b);
 
 	return 0;
 }
