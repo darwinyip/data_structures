@@ -13,17 +13,22 @@ struct Stack {
 	Node* head;
 };
 
+Node* make_node(int value) {
+	Node* node = (Node*)malloc(sizeof(Node));
+	node->value = value;
+	node->next = 0;
+	return node;
+}
+
 Stack* make_stack() {
 	Stack *new_stack = (Stack*)malloc(sizeof(Stack));
 	new_stack->head = 0;
 	return new_stack;
 }
 
-void push(Stack *stack, int value) {
-	Node *new_node = (Node*)malloc(sizeof(Node));
-	new_node->value = value;
-	new_node->next = stack->head;
-	stack->head = new_node;
+void push(Stack *stack, Node* node) {
+	node->next = stack->head;
+	stack->head = node;
 }
 
 Node* pop(Stack *stack) {
@@ -44,13 +49,11 @@ int main() {
 	printf("Pushing items...\n");
 	while(i < 10) {
 		printf("%d\n", i);
-		push(stack, i);
+		push(stack, make_node(i));
 		i++;
 	}
 	printf("Popping items...\n");
 	while(stack->head != 0) {
 		printf("%d\n", pop(stack)->value);
 	}
-
-	
 }
