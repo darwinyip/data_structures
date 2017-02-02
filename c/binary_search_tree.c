@@ -14,8 +14,6 @@ struct Binary_Search_Tree {
 	Node* root;
 };
 
-//TODO: Implement balance(). Maybe work on a self-balancing bst?
-
 Node* make_node(int value) {
 	Node* node = (Node*)malloc(sizeof(Node));
 	node->value = value;
@@ -122,8 +120,77 @@ void postorder_traversal(Node* root) {
 	printf("%d\n", current->value);
 }
 
+int tree_to_vine(Binary_Search_Tree* tree) {
+	Node* current = tree->root;
+	Node* top = tree->root;
+	Node* remainder = make_node(-1);
+	int node_count = 0;
+
+	while(top->left != 0) {
+		top = top->left;
+	}
+
+	while(current != 0) {
+		if(current->left != 0) {
+			Node* temp = current->left;
+			current->left = temp->right;
+			temp->right = current;
+			remainder->right = temp;
+			current = temp;		
+		}
+		else {
+			remainder = current;
+			current = current->right;
+			node_count++;
+		}
+	}
+	tree->root = top;
+	return node_count;
+}
+
+int calculate_full_tree_size(int node_count) {
+	int full_size = 1;
+	while(full_size <= node_count) {
+		full_size = 2 * full_size + 1;
+	}
+	return full_size / 2;
+}
+
+
+void compression(Binary_Search_Tree* tree, int count) {
+	Node* top = make_node(-1);
+	top->right = tree->root;
+	Node* current = top;
+
+	int i;
+	for(i = 0; i < count; i++) {
+		Node* child = current->right;
+		current->right = child->right;
+		current = current->right;
+		child->right = current->left;
+		current->left = child;
+	}
+	tree->root = top->right;
+}
+
+void vine_to_tree(Binary_Search_Tree* tree, int size) {
+	int full_size = calculate_full_tree_size(size); 
+	compression(tree, size - full_size);
+	for(size = full_size; size > 1; size /= 2) {
+		compression(tree, size / 2);
+	}
+}
+
+// Using DSW Algorithm
+void balance(Binary_Search_Tree* tree) {
+	int node_count = tree_to_vine(tree);
+	vine_to_tree(tree, node_count);
+}
+
 int main() {
+	printf("Creating Binary Search Tree...\n");
 	Binary_Search_Tree* tree = make_bst();
+	printf("Inserting nodes...\n");
 	insert(tree, make_node(5));
 	insert(tree, make_node(3));
 	insert(tree, make_node(4));
@@ -146,6 +213,29 @@ int main() {
 	printf("%d\n", search(tree, 1));
 	printf("Check for 7...\n");
 	printf("%d\n", search(tree, 7));
-
+	printf("Tree to vine...\n");
+	int node_count = tree_to_vine(tree);
+	printf("Pre-order Traversal\n");
+	preorder_traversal(tree->root);
+	printf("In-order Traversal\n");
+	inorder_traversal(tree->root);
+	printf("Post-order Traversal\n");
+	postorder_traversal(tree->root);
+	printf("Vine to tree..\n");
+	vine_to_tree(tree, node_count);
+	printf("Pre-order Traversal\n");
+	preorder_traversal(tree->root);
+	printf("In-order Traversal\n");
+	inorder_traversal(tree->root);
+	printf("Post-order Traversal\n");
+	postorder_traversal(tree->root);
+	printf("Balancing tree...\n");
+	balance(tree);
+	printf("Pre-order Traversal\n");
+	preorder_traversal(tree->root);
+	printf("In-order Traversal\n");
+	inorder_traversal(tree->root);
+	printf("Post-order Traversal\n");
+	postorder_traversal(tree->root);
 	return 0;
 }
